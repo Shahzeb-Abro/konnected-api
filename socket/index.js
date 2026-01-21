@@ -53,7 +53,7 @@ export const initSocket = (server, pubClient, subClient, redisClient) => {
         lastSeen: now,
       });
     });
-
-    return io;
   });
+
+  return io;
 };

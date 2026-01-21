@@ -10,6 +10,7 @@ dotenv.config();
 
 // Routes
 import authRoutes from "./routes/auth.routes.js";
+import messageRoutes from "./routes/message.routes.js";
 import { initSocket } from "./socket/index.js";
 
 const app = express();
@@ -30,7 +31,8 @@ const startServer = async () => {
     ]);
     console.log("Connected to Redis".cyan.underline);
 
-    initSocket(server, pubClient, subClient, redisClient);
+    const io = initSocket(server, pubClient, subClient, redisClient);
+    app.set("socketio", io);
 
     server.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`.bold.green);
@@ -48,6 +50,7 @@ const PORT = process.env.PORT || 5000;
 app.use(morgan("dev"));
 
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/messages", messageRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running...");
