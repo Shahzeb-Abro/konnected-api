@@ -14,6 +14,14 @@ const messageSchema = new mongoose.Schema(
     deletedForEveryone: { type: Boolean, default: false },
     deletedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     isEdited: { type: Boolean, default: false },
+    attachments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Attachment" }],
+    messageType: {
+      type: String,
+      enum: ["text", "media"],
+      default: "text",
+    },
+    seen: { type: Boolean, default: false },
+    seenAt: { type: Date },
   },
   {
     timestamps: true,
