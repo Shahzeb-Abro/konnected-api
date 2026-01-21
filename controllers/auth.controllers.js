@@ -6,9 +6,13 @@ import bcrypt from "bcryptjs";
 import { mapAuthUser } from "../mappers/userMapper.js";
 
 const signTokenAndSendCookie = (user, res) => {
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
+  const token = jwt.sign(
+    { id: user._id, name: user.name, email: user.email },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    },
+  );
   const cookieOptions = {
     httpOnly: true,
     expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days

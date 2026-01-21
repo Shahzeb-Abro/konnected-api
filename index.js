@@ -16,17 +16,21 @@ const app = express();
 const server = http.createServer(app);
 
 // REDIS setup
-const pubClient = createClient({ url: process.env.REDIS_URL });
-const subClient = pubClient.duplicate();
+const redisClient = createClient({ url: process.env.REDIS_URL });
+const pubClient = redisClient.duplicate();
+const subClient = redisClient.duplicate();
 
 const startServer = async () => {
   try {
     await connectDB();
-    await pubClient.connect();
-    await subClient.connect();
+    await Promise.all([
+      redisClient.connect(),
+      pubClient.connect(),
+      subClient.connect(),
+    ]);
     console.log("Connected to Redis".cyan.underline);
 
-    initSocket(server, pubClient, subClient);
+    initSocket(server, pubClient, subClient, redisClient);
 
     server.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`.bold.green);
